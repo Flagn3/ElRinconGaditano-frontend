@@ -1,7 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rincongaditano/screens/home_screen.dart';
+import 'package:rincongaditano/services/product_service.dart';
+import 'package:rincongaditano/services/user_service.dart';
+import 'package:rincongaditano/providers/product_provider.dart';
+import 'package:rincongaditano/providers/user_provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => UserProvider(UserService()),
+        ),
+        ChangeNotifierProxyProvider<UserProvider, ProductProvider>(
+          create: (context) => ProductProvider(ProductService(), null),
+          update: (context, userProvider, productProvider) {
+            final token = userProvider.activeUser?.token;
+            return productProvider!..updateToken(token);
+          },
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -11,8 +33,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'El Rincón Gaditano',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      home: const Scaffold(body: Center(child: Text('Página principal'))),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.orange, useMaterial3: true),
+      home: const HomeScreen(),
     );
   }
 }
