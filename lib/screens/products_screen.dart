@@ -147,10 +147,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const Icon(
-                  Icons.flag_circle, //TODO use flag image
-                  color: Color(0xFFFB8C00),
-                  size: 24,
+                CircleAvatar(
+                  radius: 15,
+                  backgroundImage: const AssetImage("assets/images/points.jpg"),
                 ),
                 Text(
                   points,
