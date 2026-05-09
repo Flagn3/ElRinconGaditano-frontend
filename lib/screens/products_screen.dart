@@ -13,7 +13,7 @@ class ProductsScreen extends StatefulWidget {
 class _ProductsScreenState extends State<ProductsScreen> {
   final TextEditingController _searchController = TextEditingController();
 
-  // categories list 
+  // categories list
   final List<Map<String, String>> _categories = [
     {
       'name': 'Bocadillos',
@@ -129,7 +129,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
               color: Colors.grey[200],
               borderRadius: BorderRadius.circular(10),
               image: const DecorationImage(
-                image: NetworkImage("https://placehold.co/55x55"),
+                image: AssetImage("assets/images/rinconGaditanoLogo.jpg"),
                 fit: BoxFit.cover,
               ),
             ),
