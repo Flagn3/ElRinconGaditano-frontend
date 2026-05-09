@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'products_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,7 +12,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    const Scaffold(body: Center(child: Text('Productos'))),
+    //const Scaffold(body: Center(child: Text('Productos'))),
+    const ProductsScreen(),
     const Scaffold(body: Center(child: Text('Carrito'))),
     const Scaffold(body: Center(child: Text('Perfil'))),
   ];
