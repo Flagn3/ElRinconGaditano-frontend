@@ -7,6 +7,7 @@ import 'package:rincongaditano/providers/product_provider.dart';
 import 'package:rincongaditano/providers/user_provider.dart';
 import 'package:rincongaditano/services/category_service.dart';
 import 'package:rincongaditano/providers/category_provider.dart';
+import 'package:rincongaditano/providers/cart_provider.dart';
 
 void main() {
   runApp(
@@ -15,6 +16,7 @@ void main() {
         ChangeNotifierProvider(
           create: (context) => UserProvider(UserService()),
         ),
+        ChangeNotifierProvider(create: (context) => CartProvider()),
         ChangeNotifierProxyProvider<UserProvider, ProductProvider>(
           create: (context) => ProductProvider(ProductService(), null),
           update: (context, userProvider, productProvider) {
