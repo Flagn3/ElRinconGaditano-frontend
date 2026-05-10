@@ -5,6 +5,8 @@ import 'package:rincongaditano/services/product_service.dart';
 import 'package:rincongaditano/services/user_service.dart';
 import 'package:rincongaditano/providers/product_provider.dart';
 import 'package:rincongaditano/providers/user_provider.dart';
+import 'package:rincongaditano/services/category_service.dart';
+import 'package:rincongaditano/providers/category_provider.dart';
 
 void main() {
   runApp(
@@ -18,6 +20,13 @@ void main() {
           update: (context, userProvider, productProvider) {
             final token = userProvider.activeUser?.token;
             return productProvider!..updateToken(token);
+          },
+        ),
+        ChangeNotifierProxyProvider<UserProvider, CategoryProvider>(
+          create: (context) => CategoryProvider(CategoryService(), null),
+          update: (context, userProvider, categoryProvider) {
+            final token = userProvider.activeUser?.token;
+            return categoryProvider!..updateToken(token);
           },
         ),
       ],

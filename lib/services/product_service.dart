@@ -79,7 +79,7 @@ class ProductService {
     String description,
     double price,
     bool available,
-    String category,
+    int categoryId,
     String image,
   ) async {
     Uri url = Uri.parse('$_baseUrl/products');
@@ -90,7 +90,7 @@ class ProductService {
         'description': description,
         'price': price,
         'available': available,
-        'category': category,
+        'categoryId': categoryId,
         'image': image,
       }),
       headers: {
@@ -138,7 +138,7 @@ class ProductService {
     String description,
     double price,
     bool available,
-    String category,
+    int categoryId,
   ) async {
     Uri url = Uri.parse('$_baseUrl/products/$id');
     final response = await http.put(
@@ -148,7 +148,7 @@ class ProductService {
         'description': description,
         'price': price,
         'available': available,
-        'category': category,
+        'categoryId': categoryId,
       }),
       headers: {
         'Accept': 'application/json',

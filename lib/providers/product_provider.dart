@@ -134,7 +134,7 @@ class ProductProvider extends ChangeNotifier {
     String description,
     double price,
     bool available,
-    String category,
+    int categoryId,
     String image,
   ) async {
     if (_isNotAuthorized()) return;
@@ -150,7 +150,7 @@ class ProductProvider extends ChangeNotifier {
         description,
         price,
         available,
-        category,
+        categoryId,
         image,
       );
 
@@ -222,7 +222,7 @@ class ProductProvider extends ChangeNotifier {
     String description,
     double price,
     bool available,
-    String category,
+    int categoryId,
   ) async {
     if (_isNotAuthorized()) return;
 
@@ -238,7 +238,7 @@ class ProductProvider extends ChangeNotifier {
         description,
         price,
         available,
-        category,
+        categoryId,
       );
 
       if (response.success) {

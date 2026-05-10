@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rincongaditano/providers/category_provider.dart';
 import 'package:rincongaditano/providers/user_provider.dart';
 import 'package:rincongaditano/widgets/category_card.dart';
 
 class ProductsScreen extends StatefulWidget {
-  const ProductsScreen({super.key});
+  final ValueChanged<String> onCategorySelected;
+  const ProductsScreen({super.key, required this.onCategorySelected});
 
   @override
   State<ProductsScreen> createState() => _ProductsScreenState();
@@ -14,58 +16,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   // categories list
-  final List<Map<String, String>> _categories = [
-    {
-      'name': 'Bocadillos',
-      'image':
-          'https://images.unsplash.com/photo-1509722747041-616f39b57569?w=600&auto=format&fit=crop',
-    },
-    {
-      'name': 'Hamburguesas',
-      'image':
-          'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop',
-    },
-    {
-      'name': 'Frituras',
-      'image':
-          'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&auto=format&fit=crop',
-    },
-    {
-      'name': 'Sándwiches',
-      'image':
-          'https://images.unsplash.com/photo-1539252554453-80ab65ce3586?w=600&auto=format&fit=crop',
-    },
-    {
-      'name': 'Bocadillos de Tortilla',
-      'image':
-          'https://images.unsplash.com/photo-1539252554453-80ab65ce3586?w=600&auto=format&fit=crop',
-    },
-    {
-      'name': 'Platos Combinados',
-      'image':
-          'https://images.unsplash.com/photo-1539252554453-80ab65ce3586?w=600&auto=format&fit=crop',
-    },
-    {
-      'name': 'Patatas Fritas',
-      'image':
-          'https://images.unsplash.com/photo-1539252554453-80ab65ce3586?w=600&auto=format&fit=crop',
-    },
-    {
-      'name': 'Pizzas',
-      'image':
-          'https://images.unsplash.com/photo-1539252554453-80ab65ce3586?w=600&auto=format&fit=crop',
-    },
-    {
-      'name': 'Salsas',
-      'image':
-          'https://images.unsplash.com/photo-1539252554453-80ab65ce3586?w=600&auto=format&fit=crop',
-    },
-    {
-      'name': 'Bebidas',
-      'image':
-          'https://images.unsplash.com/photo-1539252554453-80ab65ce3586?w=600&auto=format&fit=crop',
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<CategoryProvider>().getAllCategories();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,22 +39,102 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
             const SizedBox(height: 15),
 
-            // categories
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20.0,
-                  vertical: 10.0,
-                ),
-                itemCount: _categories.length,
-                itemBuilder: (context, index) {
-                  final category = _categories[index];
-                  return CategoryCard(
-                    name: category['name']!,
-                    imageUrl: category['image']!,
-                    onTap: () {
-                      print('Categoría: ${category['name']}');
-                      // TODO go to productsByCategory
+              child: Consumer<CategoryProvider>(
+                builder: (context, categoryProvider, child) {
+                  if (categoryProvider.isLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Color(0xFFFB8C00),
+                        ),
+                      ),
+                    );
+                  }
+
+                  if (categoryProvider.errorMessage.isNotEmpty) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.cloud_off,
+                              size: 60,
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'No se han podido cargar las categorías.',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[700],
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              categoryProvider.errorMessage,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            ElevatedButton(
+                              onPressed: () =>
+                                  categoryProvider.getAllCategories(),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFFB8C00),
+                              ),
+                              child: const Text(
+                                'Reintentar',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+
+                  if (categoryProvider.categories.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'No hay categorías disponibles.',
+                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0,
+                      vertical: 10.0,
+                    ),
+                    itemCount: categoryProvider.categories.length,
+                    itemBuilder: (context, index) {
+                      final category = categoryProvider.categories[index];
+                      // default image if image = null
+                      final String imageUrl = category.image ?? '';
+
+                      return CategoryCard(
+                        name: category.name,
+                        imageUrl: imageUrl,
+                        onTap: () {
+                          widget.onCategorySelected(category.name);
+                          /*
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CategoryProductsScreen(
+                                categoryName: category.name,
+                              ),
+                            ),
+                          );*/
+                        },
+                      );
                     },
                   );
                 },
@@ -147,10 +184,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const Icon(
-                  Icons.flag_circle, //TODO use flag image
-                  color: Color(0xFFFB8C00),
-                  size: 24,
+                CircleAvatar(
+                  radius: 15,
+                  backgroundImage: const AssetImage("assets/images/points.jpg"),
                 ),
                 Text(
                   points,
