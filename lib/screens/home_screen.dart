@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rincongaditano/screens/category_products_screen.dart';
 import 'products_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,12 +12,34 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
+  String? _selectedCategory;
+
+  Widget _buildProductsTab() {
+    if (_selectedCategory == null) {
+      return ProductsScreen(
+        onCategorySelected: (categoryName) {
+          setState(() {
+            _selectedCategory = categoryName;
+          });
+        },
+      );
+    } else {
+      return CategoryProductsScreen(
+        categoryName: _selectedCategory!,
+        onBack: () {
+          setState(() {
+            _selectedCategory = null;
+          });
+        },
+      );
+    }
+  }
+  /*
   final List<Widget> _screens = [
-    //const Scaffold(body: Center(child: Text('Productos'))),
     const ProductsScreen(),
     const Scaffold(body: Center(child: Text('Carrito'))),
     const Scaffold(body: Center(child: Text('Perfil'))),
-  ];
+  ];*/
 
   void _onItemTapped(int index) {
     setState(() {
@@ -26,8 +49,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> screens = [
+      _buildProductsTab(),
+      const Scaffold(body: Center(child: Text('Carrito'))),
+      const Scaffold(body: Center(child: Text('Perfil'))),
+    ];
+
     return Scaffold(
-      body: IndexedStack(index: _selectedIndex, children: _screens),
+      body: IndexedStack(index: _selectedIndex, children: screens),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,

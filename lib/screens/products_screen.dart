@@ -5,7 +5,8 @@ import 'package:rincongaditano/providers/user_provider.dart';
 import 'package:rincongaditano/widgets/category_card.dart';
 
 class ProductsScreen extends StatefulWidget {
-  const ProductsScreen({super.key});
+  final ValueChanged<String> onCategorySelected;
+  const ProductsScreen({super.key, required this.onCategorySelected});
 
   @override
   State<ProductsScreen> createState() => _ProductsScreenState();
@@ -116,18 +117,22 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     itemBuilder: (context, index) {
                       final category = categoryProvider.categories[index];
                       // default image if image = null
-                      final String imageUrl =
-                          category.image ??
-                          'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600';
+                      final String imageUrl = category.image ?? '';
 
                       return CategoryCard(
                         name: category.name,
                         imageUrl: imageUrl,
                         onTap: () {
-                          print(
-                            'Categoría: ${category.name} ID: ${category.id}',
-                          );
-                          // TODO go to products by category selected
+                          widget.onCategorySelected(category.name);
+                          /*
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CategoryProductsScreen(
+                                categoryName: category.name,
+                              ),
+                            ),
+                          );*/
                         },
                       );
                     },
