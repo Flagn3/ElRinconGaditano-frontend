@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rincongaditano/providers/product_provider.dart';
 import 'package:rincongaditano/widgets/product_card.dart';
+import 'package:rincongaditano/models/product.dart';
 
 class CategoryProductsScreen extends StatefulWidget {
   final String categoryName;
   final VoidCallback onBack;
+  final ValueChanged<Product> onProductSelected;
 
   const CategoryProductsScreen({
     super.key,
     required this.categoryName,
     required this.onBack,
+    required this.onProductSelected,
   });
 
   @override
@@ -108,6 +111,25 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
             itemBuilder: (context, index) {
               final product = productProvider.products[index];
 
+              return GestureDetector(
+                onTap: () {
+                  widget.onProductSelected(product); //go to product detail
+                },
+                child: ProductCard(
+                  product: product,
+                  onAddTap: () {
+                    // TODO add to chart when press the button
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Producto añadido al carrito'),
+                        duration: const Duration(seconds: 1),
+                        backgroundColor: const Color(0xFFFB8C00),
+                      ),
+                    );
+                  },
+                ),
+              );
+              /*
               return ProductCard(
                 product: product,
                 onAddTap: () {
@@ -120,7 +142,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                     ),
                   );
                 },
-              );
+              );*/
             },
           );
         },
