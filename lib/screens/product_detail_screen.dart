@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rincongaditano/models/product.dart';
+import 'package:rincongaditano/providers/cart_provider.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Product product;
@@ -179,7 +181,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 height: 55,
                 child: ElevatedButton(
                   onPressed: () {
-                    // TODO implement add to chart
+                    context.read<CartProvider>().addProduct(
+                      widget.product,
+                      quantity: _quantity,
+                    );
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Producto añadido al carrito'),

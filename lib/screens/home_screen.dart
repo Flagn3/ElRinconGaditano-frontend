@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rincongaditano/providers/cart_provider.dart';
+import 'package:rincongaditano/screens/cart_screen.dart';
 import 'package:rincongaditano/screens/category_products_screen.dart';
 import 'package:rincongaditano/screens/product_detail_screen.dart';
 import 'products_screen.dart';
@@ -52,12 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
   }
-  /*
-  final List<Widget> _screens = [
-    const ProductsScreen(),
-    const Scaffold(body: Center(child: Text('Carrito'))),
-    const Scaffold(body: Center(child: Text('Perfil'))),
-  ];*/
 
   void _onItemTapped(int index) {
     setState(() {
@@ -67,9 +64,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cartProvider = context.watch<CartProvider>();
+    final int totalItems = cartProvider.items.length;
+
     final List<Widget> screens = [
       _buildProductsTab(),
-      const Scaffold(body: Center(child: Text('Carrito'))),
+      const CartScreen(),
       const Scaffold(body: Center(child: Text('Perfil'))),
     ];
 
@@ -80,18 +80,45 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: _onItemTapped,
         selectedItemColor: Colors.orange,
         unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(
+        items: [
+          const BottomNavigationBarItem(
             icon: Icon(Icons.restaurant_menu),
             activeIcon: Icon(Icons.restaurant_menu_outlined),
             label: 'Productos',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            activeIcon: Icon(Icons.shopping_cart_outlined),
+            icon: Badge(
+              isLabelVisible: totalItems > 0,
+              backgroundColor: const Color(0xFFFB8C00),
+              label: Text(
+                '$totalItems',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 10,
+                  fontFamily: 'Inter',
+                ),
+              ),
+              child: const Icon(Icons.shopping_cart),
+            ),
+
+            activeIcon: Badge(
+              isLabelVisible: totalItems > 0,
+              backgroundColor: const Color(0xFFFB8C00),
+              label: Text(
+                '$totalItems',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 10,
+                  fontFamily: 'Inter',
+                ),
+              ),
+              child: const Icon(Icons.shopping_cart_outlined),
+            ),
             label: 'Carrito',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.person),
             activeIcon: Icon(Icons.person_outline),
             label: 'Perfil',

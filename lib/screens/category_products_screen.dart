@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rincongaditano/providers/cart_provider.dart';
 import 'package:rincongaditano/providers/product_provider.dart';
 import 'package:rincongaditano/widgets/product_card.dart';
 import 'package:rincongaditano/models/product.dart';
@@ -118,7 +119,11 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                 child: ProductCard(
                   product: product,
                   onAddTap: () {
-                    // TODO add to chart when press the button
+                    //add 1
+                    context.read<CartProvider>().addProduct(
+                      product,
+                      quantity: 1,
+                    );
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Producto añadido al carrito'),
@@ -129,20 +134,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                   },
                 ),
               );
-              /*
-              return ProductCard(
-                product: product,
-                onAddTap: () {
-                  // TODO add to chart when press the button
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Producto añadido al carrito'),
-                      duration: const Duration(seconds: 1),
-                      backgroundColor: const Color(0xFFFB8C00),
-                    ),
-                  );
-                },
-              );*/
             },
           );
         },
