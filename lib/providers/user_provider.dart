@@ -27,6 +27,7 @@ class UserProvider extends ChangeNotifier {
     if (token != null && userId != null) {
       _activeUser = User(token: token, id: int.parse(userId));
       await getById(int.parse(userId), token);
+      notifyListeners();
     }
   }
 
@@ -43,6 +44,7 @@ class UserProvider extends ChangeNotifier {
 
         await _storage.write(key: 'token', value: _activeUser!.token);
         await _storage.write(key: 'userId', value: _activeUser!.id.toString());
+        await getById(_activeUser!.id!, _activeUser!.token!);
       } else {
         _errorMessage = response.message;
       }
@@ -130,6 +132,7 @@ class UserProvider extends ChangeNotifier {
       if (response.success && response.data != null) {
         _activeUser = User.fromJson(response.data);
         _activeUser!.token = token;
+        notifyListeners();
       }
     } catch (e) {
       _errorMessage = e.toString();
@@ -154,7 +157,12 @@ class UserProvider extends ChangeNotifier {
       );
 
       if (response.success) {
-        await getAllUsers();
+        if (_activeUser!.id == id) {
+          _activeUser = null;
+          await _storage.deleteAll();
+        } else {
+          await getAllUsers();
+        }
       } else {
         _errorMessage = response.message;
       }
