@@ -8,12 +8,14 @@ import 'package:rincongaditano/widgets/cart_summary.dart';
 import 'package:rincongaditano/widgets/empty_cart_view.dart';
 
 class CartScreen extends StatelessWidget {
-  const CartScreen({super.key});
+  final VoidCallback onNavigateToProfile;
+
+  const CartScreen({super.key, required this.onNavigateToProfile});
 
   @override
   Widget build(BuildContext context) {
     final cartProvider = context.watch<CartProvider>();
-    final userProvider = Provider.of<UserProvider>(context);
+    final userProvider = context.watch<UserProvider>();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -71,7 +73,8 @@ class CartScreen extends StatelessWidget {
                   ),
                   backgroundColor: Colors.red,
                 ),
-              ); //TODO redirect to login screen
+              );
+              onNavigateToProfile();
             } else {
               print('Total pedido: ${cartProvider.total}€'); //TODO create order
             }
