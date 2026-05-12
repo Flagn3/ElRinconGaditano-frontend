@@ -6,6 +6,7 @@ import 'package:rincongaditano/widgets/cart_header.dart';
 import 'package:rincongaditano/widgets/cart_item_card.dart';
 import 'package:rincongaditano/widgets/cart_summary.dart';
 import 'package:rincongaditano/widgets/empty_cart_view.dart';
+import 'package:rincongaditano/widgets/cart_order_button.dart';
 
 class CartScreen extends StatelessWidget {
   final VoidCallback onNavigateToProfile;
@@ -46,55 +47,12 @@ class CartScreen extends StatelessWidget {
               CartSummary(cartProvider: cartProvider),
 
             if (cartProvider.items.isNotEmpty)
-              _buildOrderButton(context, userProvider, cartProvider),
+              CartOrderButton(
+                userProvider: userProvider,
+                cartProvider: cartProvider,
+                onNavigateToProfile: onNavigateToProfile,
+              ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOrderButton(
-    BuildContext context,
-    UserProvider userProvider,
-    CartProvider cartProvider,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 5),
-      child: SizedBox(
-        width: double.infinity,
-        height: 55,
-        child: ElevatedButton(
-          onPressed: () {
-            if (userProvider.activeUser == null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'Debes iniciar sesión para poder realizar el pedido',
-                  ),
-                  backgroundColor: Colors.red,
-                ),
-              );
-              onNavigateToProfile();
-            } else {
-              print('Total pedido: ${cartProvider.total}€'); //TODO create order
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFFB8C00),
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            elevation: 2,
-          ),
-          child: const Text(
-            'Realizar pedido',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Inter',
-            ),
-          ),
         ),
       ),
     );
