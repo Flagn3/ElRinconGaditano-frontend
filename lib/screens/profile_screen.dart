@@ -4,6 +4,7 @@ import 'package:rincongaditano/models/user.dart';
 import 'package:rincongaditano/providers/user_provider.dart';
 import 'package:rincongaditano/screens/auth/login_screen.dart';
 import 'package:rincongaditano/screens/auth/register_screen.dart';
+import 'package:rincongaditano/screens/edit_profile_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -173,8 +174,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: Icons.edit_outlined,
                   title: 'Editar perfil',
                   onTap: () {
-                    // TODO
-                    print('Editar perfil');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EditProfileScreen(),
+                      ),
+                    );
                   },
                 ),
                 _buildMenuButton(
@@ -205,7 +210,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('Tu cuenta ha sido eliminada'),
-                                backgroundColor: Colors.amber,
+                                backgroundColor: Color(0xFFFB8C00),
                               ),
                             );
                           }
@@ -231,6 +236,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('Sesión cerrada correctamente'),
+                              backgroundColor: Color(0xFFFB8C00),
                             ),
                           );
                         }
