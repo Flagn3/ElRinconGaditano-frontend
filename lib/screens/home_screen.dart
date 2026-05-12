@@ -4,6 +4,7 @@ import 'package:rincongaditano/providers/cart_provider.dart';
 import 'package:rincongaditano/screens/cart_screen.dart';
 import 'package:rincongaditano/screens/category_products_screen.dart';
 import 'package:rincongaditano/screens/product_detail_screen.dart';
+import 'package:rincongaditano/screens/profile_screen.dart';
 import 'products_screen.dart';
 import 'package:rincongaditano/models/product.dart';
 
@@ -69,8 +70,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final List<Widget> screens = [
       _buildProductsTab(),
-      const CartScreen(),
-      const Scaffold(body: Center(child: Text('Perfil'))),
+      CartScreen(onNavigateToProfile: () => _onItemTapped(2)),
+      const ProfileScreen(),
     ];
 
     return Scaffold(
