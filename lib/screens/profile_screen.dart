@@ -5,6 +5,7 @@ import 'package:rincongaditano/providers/user_provider.dart';
 import 'package:rincongaditano/screens/auth/login_screen.dart';
 import 'package:rincongaditano/screens/auth/register_screen.dart';
 import 'package:rincongaditano/screens/edit_profile_screen.dart';
+import 'package:rincongaditano/screens/order_history_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -158,16 +159,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: Icons.delivery_dining_outlined,
                   title: 'Estado del último pedido',
                   onTap: () {
-                    // TODO
-                    print('Ver último pedido');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const OrdersHistoryScreen(showOnlyLast: true),
+                      ),
+                    );
                   },
                 ),
                 _buildMenuButton(
                   icon: Icons.history,
                   title: 'Historial de pedidos',
                   onTap: () {
-                    // TODO
-                    print('Ver historial de pedidos');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const OrdersHistoryScreen(showOnlyLast: false),
+                      ),
+                    );
                   },
                 ),
                 _buildMenuButton(

@@ -9,12 +9,17 @@ class OrderService {
   Future<ResponseApi> createOrder(
     int userId,
     List<Map<String, dynamic>> items,
+    String deliveryType,
     String token,
   ) async {
     Uri url = Uri.parse('$_baseUrl/orders');
     final response = await http.post(
       url,
-      body: jsonEncode({'userId': userId, 'items': items}),
+      body: jsonEncode({
+        'userId': userId,
+        'deliveryType': deliveryType,
+        'items': items,
+      }),
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',

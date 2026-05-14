@@ -31,7 +31,11 @@ class OrderProvider extends ChangeNotifier {
   }
 
   // post create (bool to empty the char if true)
-  Future<bool> createOrder(int userId, List<Map<String, dynamic>> items) async {
+  Future<bool> createOrder(
+    int userId,
+    List<Map<String, dynamic>> items,
+    String deliveryType,
+  ) async {
     if (_isNotAuthorized()) return false;
 
     _errorMessage = '';
@@ -42,6 +46,7 @@ class OrderProvider extends ChangeNotifier {
       ResponseApi response = await _orderService.createOrder(
         userId,
         items,
+        deliveryType,
         _token!,
       );
 

@@ -49,13 +49,19 @@ class _PaymentScreenState extends State<PaymentScreen> {
       return {'productId': item.product.id, 'amount': item.quantity};
     }).toList();
 
-    bool success = await orderProvider.createOrder(user.id!, orderItems);
+    bool success = await orderProvider.createOrder(
+      user.id!,
+      orderItems,
+      widget.deliveryType,
+    );
 
     if (!mounted) return;
     setState(() => _isProcessingBank = false);
 
     if (success) {
       cartProvider.clearCart();
+
+      await userProvider.getById(user.id!, user.token!);
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -78,6 +84,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     final cartProvider = context.watch<CartProvider>();
 
+    final subtotal = cartProvider.subtotal;
+    final shippingCost = widget.deliveryType == 'A domicilio' ? 2.50 : 0.0;
+    final totalFinal = subtotal + shippingCost;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -95,7 +105,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSummaryCard(cartProvider.total),
+                    _buildSummaryCard(subtotal, shippingCost, totalFinal),
                     const SizedBox(height: 25),
 
                     if (widget.paymentMethod == 'Tarjeta') ...[
@@ -186,7 +196,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         ),
                         child: Text(
                           widget.paymentMethod == 'Tarjeta'
-                              ? 'Pagar ${cartProvider.total.toStringAsFixed(2)}€'
+                              ? 'Pagar ${totalFinal.toStringAsFixed(2)}€'
                               : 'Confirmar Pedido',
                           style: const TextStyle(
                             fontSize: 18,
@@ -202,36 +212,69 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
-  Widget _buildSummaryCard(double total) {
+  Widget _buildSummaryCard(double subtotal, double shipping, double total) {
     return Card(
       color: Colors.orange.shade50,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Método: ${widget.paymentMethod}',
-                  style: const TextStyle(fontWeight: FontWeight.w500),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Método: ${widget.paymentMethod}',
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    Text(
+                      'Tipo: ${widget.deliveryType}',
+                      style: const TextStyle(color: Colors.black54),
+                    ),
+                  ],
                 ),
                 Text(
-                  'Tipo: ${widget.deliveryType}',
-                  style: const TextStyle(color: Colors.black54),
+                  '${total.toStringAsFixed(2)}€',
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFFB8C00),
+                  ),
                 ),
               ],
             ),
-            Text(
-              '${total.toStringAsFixed(2)}€',
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFFFB8C00),
+            if (widget.deliveryType == 'A domicilio') ...[
+              const Divider(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Comida:',
+                    style: TextStyle(fontSize: 13, color: Colors.black54),
+                  ),
+                  Text(
+                    '${subtotal.toStringAsFixed(2)}€',
+                    style: const TextStyle(fontSize: 13, color: Colors.black54),
+                  ),
+                ],
               ),
-            ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Envío:',
+                    style: TextStyle(fontSize: 13, color: Colors.black54),
+                  ),
+                  Text(
+                    '${shipping.toStringAsFixed(2)}€',
+                    style: const TextStyle(fontSize: 13, color: Colors.black54),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
