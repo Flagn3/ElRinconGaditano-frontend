@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rincongaditano/models/order.dart';
 import 'package:rincongaditano/providers/order_provider.dart';
 import 'package:rincongaditano/providers/user_provider.dart';
+import 'package:rincongaditano/screens/order_detail_screen.dart';
 
 class OrdersHistoryScreen extends StatefulWidget {
   final bool showOnlyLast;
@@ -61,13 +62,22 @@ class _OrdersHistoryScreenState extends State<OrdersHistoryScreen> {
             )
           : orders.isEmpty
           ? _buildEmptyState()
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: orders.length,
-              itemBuilder: (context, index) {
-                final Order order = orders[index];
-                return _buildOrderCard(order);
+          : RefreshIndicator(
+              color: const Color(0xFFFB8C00),
+              onRefresh: () async {
+                final userId = context.read<UserProvider>().activeUser?.id;
+                if (userId != null) {
+                  await context.read<OrderProvider>().getOrdersByUser(userId);
+                }
               },
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: orders.length,
+                itemBuilder: (context, index) {
+                  final Order order = orders[index];
+                  return _buildOrderCard(order);
+                },
+              ),
             ),
     );
   }
@@ -104,15 +114,12 @@ class _OrdersHistoryScreenState extends State<OrdersHistoryScreen> {
     }
 
     double productsSubtotal = 0.0;
-    if (order.lines != null) {
-      for (var line in order.lines) {
-        productsSubtotal += (line.unitPrice * line.amount);
-      }
+
+    for (var line in order.lines) {
+      productsSubtotal += (line.unitPrice * line.amount);
     }
 
     bool isLocalPickup = (order.totalPrice - productsSubtotal).abs() < 0.1;
-    double shippingCost = isLocalPickup ? 0.0 : 2.50;
-
     final String status = order.status.toUpperCase();
     Color statusColor = Colors.orange;
     String statusText = 'Pendiente';
@@ -128,154 +135,164 @@ class _OrdersHistoryScreenState extends State<OrdersHistoryScreen> {
       statusText = 'Aceptado';
     }
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderDetailScreen(orderId: order.id!),
           ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.calendar_today_outlined,
-                      color: Colors.grey[700],
-                      size: 18,
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.08),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_today_outlined,
+                        color: Colors.grey[700],
+                        size: 18,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        formattedDate,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          fontFamily: 'Inter',
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      formattedDate,
-                      style: const TextStyle(
+                    decoration: BoxDecoration(
+                      color: statusColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Text(
+                      statusText,
+                      style: TextStyle(
+                        color: statusColor,
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 12,
                         fontFamily: 'Inter',
-                        color: Colors.black87,
                       ),
                     ),
-                  ],
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
                   ),
-                  decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Text(
-                    statusText,
+                ],
+              ),
+              const SizedBox(height: 14),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Contenido:',
                     style: TextStyle(
-                      color: statusColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      color: Colors.grey[600],
+                      fontSize: 14,
                       fontFamily: 'Inter',
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 14),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Contenido:',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 14,
-                    fontFamily: 'Inter',
+                  Text(
+                    totalArticles == 1
+                        ? '1 artículo'
+                        : '$totalArticles artículos',
+                    style: const TextStyle(
+                      color: Colors.black87,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Inter',
+                    ),
                   ),
-                ),
-                Text(
-                  totalArticles == 1
-                      ? '1 artículo'
-                      : '$totalArticles artículos',
-                  style: const TextStyle(
-                    color: Colors.black87,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: 'Inter',
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Tipo de entrega:',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 14,
+                      fontFamily: 'Inter',
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Tipo de entrega:',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 14,
-                    fontFamily: 'Inter',
+                  Text(
+                    isLocalPickup ? 'Recogida en Local' : 'Envío a Domicilio',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Inter',
+                    ),
                   ),
-                ),
-                Text(
-                  isLocalPickup ? 'Recogida en Local' : 'Envío a Domicilio',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: 'Inter',
-                  ),
-                ),
-              ],
-            ),
+                ],
+              ),
 
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.0),
-              child: Divider(height: 1, color: Color(0xFFF5F5F5)),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Ref: #${order.id}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[400],
-                    fontFamily: 'Inter',
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 12.0),
+                child: Divider(height: 1, color: Color(0xFFF5F5F5)),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Ref: #${order.id}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[400],
+                      fontFamily: 'Inter',
+                    ),
                   ),
-                ),
-                Row(
-                  children: [
-                    const Text(
-                      'Total ',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black54,
-                        fontFamily: 'Inter',
+                  Row(
+                    children: [
+                      const Text(
+                        'Total ',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black54,
+                          fontFamily: 'Inter',
+                        ),
                       ),
-                    ),
-                    Text(
-                      '${order.totalPrice.toStringAsFixed(2)}€',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFFB8C00),
-                        fontFamily: 'Inter',
+                      Text(
+                        '${order.totalPrice.toStringAsFixed(2)}€',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFFB8C00),
+                          fontFamily: 'Inter',
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
