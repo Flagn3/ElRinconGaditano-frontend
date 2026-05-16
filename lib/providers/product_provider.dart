@@ -41,7 +41,8 @@ class ProductProvider extends ChangeNotifier {
 
       if (response.success && response.data != null) {
         List<dynamic> data = response.data;
-        _products = data.map((item) => Product.fromJson(item)).toList();
+        _products = data.map((item) => Product.fromJson(item)).toList()
+          ..sort((a, b) => (a.id ?? 0).compareTo(b.id ?? 0));
       } else {
         _errorMessage = response.message;
       }
@@ -65,7 +66,8 @@ class ProductProvider extends ChangeNotifier {
       );
       if (response.success && response.data != null) {
         List<dynamic> data = response.data;
-        _products = data.map((item) => Product.fromJson(item)).toList();
+        _products = data.map((item) => Product.fromJson(item)).toList()
+          ..sort((a, b) => (a.id ?? 0).compareTo(b.id ?? 0));
       }
     } catch (e) {
       _errorMessage = e.toString();
@@ -88,7 +90,8 @@ class ProductProvider extends ChangeNotifier {
 
       if (response.success && response.data != null) {
         List<dynamic> data = response.data;
-        _products = data.map((item) => Product.fromJson(item)).toList();
+        _products = data.map((item) => Product.fromJson(item)).toList()
+          ..sort((a, b) => (a.id ?? 0).compareTo(b.id ?? 0));
       } else {
         _errorMessage = response.message;
       }
@@ -116,7 +119,8 @@ class ProductProvider extends ChangeNotifier {
 
       if (response.success && response.data != null) {
         List<dynamic> data = response.data;
-        _products = data.map((item) => Product.fromJson(item)).toList();
+        _products = data.map((item) => Product.fromJson(item)).toList()
+          ..sort((a, b) => (a.id ?? 0).compareTo(b.id ?? 0));
       } else {
         _errorMessage = response.message;
       }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rincongaditano/screens/home_screen.dart';
+import 'package:rincongaditano/screens/role_router_screen.dart';
 import 'package:rincongaditano/services/product_service.dart';
 import 'package:rincongaditano/services/user_service.dart';
 import 'package:rincongaditano/providers/product_provider.dart';
@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
       title: 'El Rincón Gaditano',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.orange, useMaterial3: true),
-      home: const HomeScreen(),
+      home: const RoleRouterScreen(),
     );
   }
 }

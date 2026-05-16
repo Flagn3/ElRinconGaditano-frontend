@@ -41,7 +41,8 @@ class CategoryProvider extends ChangeNotifier {
 
       if (response.success && response.data != null) {
         List<dynamic> data = response.data;
-        _categories = data.map((item) => Category.fromJson(item)).toList();
+        _categories = data.map((item) => Category.fromJson(item)).toList()
+          ..sort((a, b) => (a.id ?? 0).compareTo(b.id ?? 0));
       } else {
         _errorMessage = response.message;
       }
