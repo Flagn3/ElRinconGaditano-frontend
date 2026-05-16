@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rincongaditano/providers/user_provider.dart';
+import 'package:rincongaditano/screens/admin/admin_category_screen.dart';
 import 'package:rincongaditano/screens/admin/admin_orders_screen.dart';
 
 class AdminDashboardScreen extends StatelessWidget {
@@ -79,7 +80,12 @@ class AdminDashboardScreen extends StatelessWidget {
                   subtitle: 'Organizar carta',
                   color: Colors.purple,
                   onTap: () {
-                    // TODO
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AdminCategoryScreen(),
+                      ),
+                    );
                   },
                 ),
                 _buildMenuCard(
