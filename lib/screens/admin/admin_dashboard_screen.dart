@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rincongaditano/providers/user_provider.dart';
+import 'package:rincongaditano/screens/admin/admin_orders_screen.dart';
 
 class AdminDashboardScreen extends StatelessWidget {
   const AdminDashboardScreen({super.key});
@@ -55,7 +56,12 @@ class AdminDashboardScreen extends StatelessWidget {
                   subtitle: 'Cocina y repartos',
                   color: Colors.orange,
                   onTap: () {
-                    // TODO
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AdminOrdersScreen(),
+                      ),
+                    );
                   },
                 ),
                 _buildMenuCard(
