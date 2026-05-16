@@ -4,6 +4,7 @@ import 'package:rincongaditano/providers/user_provider.dart';
 import 'package:rincongaditano/screens/admin/admin_category_screen.dart';
 import 'package:rincongaditano/screens/admin/admin_orders_screen.dart';
 import 'package:rincongaditano/screens/admin/admin_product_screen.dart';
+import 'package:rincongaditano/screens/admin/admin_user_screen.dart';
 
 class AdminDashboardScreen extends StatelessWidget {
   const AdminDashboardScreen({super.key});
@@ -100,7 +101,12 @@ class AdminDashboardScreen extends StatelessWidget {
                   subtitle: 'Gestión de usuarios',
                   color: Colors.green,
                   onTap: () {
-                    // TODO
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AdminUserScreen(),
+                      ),
+                    );
                   },
                 ),
               ],
