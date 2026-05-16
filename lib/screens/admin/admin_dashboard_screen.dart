@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rincongaditano/providers/user_provider.dart';
 import 'package:rincongaditano/screens/admin/admin_category_screen.dart';
 import 'package:rincongaditano/screens/admin/admin_orders_screen.dart';
+import 'package:rincongaditano/screens/admin/admin_product_screen.dart';
 
 class AdminDashboardScreen extends StatelessWidget {
   const AdminDashboardScreen({super.key});
@@ -71,7 +72,12 @@ class AdminDashboardScreen extends StatelessWidget {
                   subtitle: 'Gestionar productos',
                   color: Colors.blue,
                   onTap: () {
-                    // TODO
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AdminProductScreen(),
+                      ),
+                    );
                   },
                 ),
                 _buildMenuCard(
