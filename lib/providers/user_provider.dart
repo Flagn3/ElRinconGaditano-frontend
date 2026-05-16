@@ -111,9 +111,8 @@ class UserProvider extends ChangeNotifier {
       );
 
       if (response.success && response.data != null) {
-        userList = (response.data as List)
-            .map((u) => User.fromJson(u))
-            .toList();
+        userList = (response.data as List).map((u) => User.fromJson(u)).toList()
+          ..sort((a, b) => (a.id ?? 0).compareTo(b.id ?? 0));
       } else {
         _errorMessage = response.message;
       }
