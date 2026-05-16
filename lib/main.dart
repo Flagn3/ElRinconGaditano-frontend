@@ -8,6 +8,8 @@ import 'package:rincongaditano/providers/user_provider.dart';
 import 'package:rincongaditano/services/category_service.dart';
 import 'package:rincongaditano/providers/category_provider.dart';
 import 'package:rincongaditano/providers/cart_provider.dart';
+import 'package:rincongaditano/services/order_service.dart';
+import 'package:rincongaditano/providers/order_provider.dart';
 
 void main() {
   runApp(
@@ -29,6 +31,13 @@ void main() {
           update: (context, userProvider, categoryProvider) {
             final token = userProvider.activeUser?.token;
             return categoryProvider!..updateToken(token);
+          },
+        ),
+        ChangeNotifierProxyProvider<UserProvider, OrderProvider>(
+          create: (context) => OrderProvider(OrderService(), null),
+          update: (context, userProvider, orderProvider) {
+            final token = userProvider.activeUser?.token;
+            return orderProvider!..updateToken(token);
           },
         ),
       ],
