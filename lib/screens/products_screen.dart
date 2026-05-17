@@ -13,8 +13,6 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
-  final TextEditingController _searchController = TextEditingController();
-
   // categories list
   @override
   void initState() {
@@ -33,9 +31,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
           children: [
             // header
             _buildCustomHeader(),
-
-            // button to search
-            _buildSearchBar(),
 
             const SizedBox(height: 15),
 
@@ -201,50 +196,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  // searcher
-  Widget _buildSearchBar() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40.0),
-      child: Container(
-        height: 45,
-        decoration: BoxDecoration(
-          color: const Color(0xFFFB8C00),
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              blurRadius: 4,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: TextField(
-          controller: _searchController,
-          style: const TextStyle(color: Colors.white, fontSize: 16),
-          textAlign: TextAlign.start,
-          decoration: const InputDecoration(
-            hintText: 'Buscador',
-            hintStyle: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Inter',
-            ),
-            prefixIcon: Padding(
-              padding: EdgeInsets.only(left: 110), // TODO center
-              child: Icon(Icons.search, color: Colors.white),
-            ),
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.symmetric(vertical: 10),
-          ),
-          onChanged: (value) {
-            // TODO go to search
-          },
-        ),
       ),
     );
   }
