@@ -139,4 +139,18 @@ class UserService {
     );
     return ResponseApi.fromJson(json.decode(response.body));
   }
+
+  //send verification email
+  Future<ResponseApi> sendVerificationEmail(String email) async {
+    Uri url = Uri.parse('$_baseUrl/auth/send-verification');
+    final response = await http.post(
+      url,
+      body: jsonEncode({'email': email}),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    );
+    return ResponseApi.fromJson(json.decode(response.body));
+  }
 }

@@ -76,7 +76,9 @@ class UserProvider extends ChangeNotifier {
         password,
         address,
       );
-      if (!response.success) {
+      if (response.success) {
+        await _userService.sendVerificationEmail(email);
+      } else {
         _errorMessage = response.message;
       }
     } catch (e) {

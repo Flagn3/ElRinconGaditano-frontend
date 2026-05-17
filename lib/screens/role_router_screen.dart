@@ -9,21 +9,11 @@ class RoleRouterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = context.watch<UserProvider>();
+    final String? userRole = context.select(
+      (UserProvider provider) => provider.activeUser?.role,
+    );
 
-    if (userProvider.isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator(color: Colors.orange)),
-      );
-    }
-
-    final user = userProvider.activeUser;
-
-    if (user == null || user.role == 'ROLE_USER') {
-      return const HomeScreen();
-    }
-
-    if (user.role == 'ROLE_ADMIN') {
+    if (userRole == 'ROLE_ADMIN') {
       return const AdminDashboardScreen();
     }
 

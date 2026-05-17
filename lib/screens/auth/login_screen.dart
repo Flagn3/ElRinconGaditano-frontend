@@ -35,10 +35,33 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (mounted) {
         if (userProvider.errorMessage.isNotEmpty) {
+          final bool needsVerification = userProvider.errorMessage
+              .toLowerCase()
+              .contains('verify');
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(userProvider.errorMessage),
-              backgroundColor: Colors.red,
+              content: Row(
+                children: [
+                  Icon(
+                    needsVerification
+                        ? Icons.mark_email_unread_outlined
+                        : Icons.error_outline,
+                    color: Colors.white,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      userProvider.errorMessage,
+                      style: const TextStyle(fontFamily: 'Inter'),
+                    ),
+                  ),
+                ],
+              ),
+              backgroundColor: needsVerification
+                  ? const Color(0xFFFB8C00)
+                  : Colors.red,
+              duration: Duration(seconds: needsVerification ? 5 : 4),
             ),
           );
         } else if (userProvider.activeUser != null) {
